@@ -1,33 +1,28 @@
 "use client"
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Logo from "../shared/Logo"
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      setScrolled(window.scrollY > 20)
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 border-b ${
-      isScrolled 
-        ? "bg-slate-900/80 backdrop-blur-lg border-white/10 py-3 shadow-2xl shadow-black/20" 
-        : "bg-transparent border-transparent py-6"
+    <nav className={`fixed w-full z-50 transition-all duration-300 ${
+      scrolled ? "bg-slate-900/90 backdrop-blur-md py-4 shadow-xl" : "bg-transparent py-6"
     }`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link href="/" className="text-2xl font-extrabold text-white flex items-center gap-3 group">
-          <span className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-accent-500 flex items-center justify-center text-xl shadow-lg group-hover:scale-105 transition-transform">
-            ☀️
-          </span>
-          <span className="tracking-tight">Vasudhaiv Solar</span>
-        </Link>
-
+        <Logo />
+        
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           <Link href="/" className="text-sm font-semibold text-slate-300 hover:text-white transition-colors">Home</Link>
@@ -41,19 +36,19 @@ export default function Navbar() {
         {/* Mobile Toggle */}
         <button 
           className="md:hidden w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white backdrop-blur-sm" 
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {menuOpen ? "✖" : "☰"}
+          {mobileMenuOpen ? "✖" : "☰"}
         </button>
       </div>
 
       {/* Mobile Menu */}
-      {menuOpen && (
+      {mobileMenuOpen && (
         <div className="md:hidden absolute w-full left-0 top-full bg-slate-900/95 backdrop-blur-xl border-t border-white/10 py-6 px-6 flex flex-col gap-4 shadow-2xl">
-          <Link href="/" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-white">Home</Link>
-          <Link href="/services" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-white">Services</Link>
-          <Link href="/contact" onClick={() => setMenuOpen(false)} className="text-lg font-semibold text-white">Contact</Link>
-          <Link href="/login" onClick={() => setMenuOpen(false)} className="mt-4 text-center py-3 bg-primary-500 text-white font-bold rounded-xl">
+          <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-white">Home</Link>
+          <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-white">Services</Link>
+          <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-white">Contact</Link>
+          <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="mt-4 text-center py-3 bg-primary-500 text-white font-bold rounded-xl">
             Client Portal
           </Link>
         </div>

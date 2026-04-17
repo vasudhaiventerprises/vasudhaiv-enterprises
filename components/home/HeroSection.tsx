@@ -7,11 +7,13 @@ import SolarBackground from "./SolarBackground"
 export default function HeroSection() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
-    const formData = new FormData(e.currentTarget)
+    const form = e.currentTarget
+    const formData = new FormData(form)
     const payload = {
       full_name: formData.get("name") as string,
       phone: formData.get("phone") as string,
@@ -26,7 +28,11 @@ export default function HeroSection() {
     setLoading(false)
     if (!error) {
       setSuccess(true)
-      e.currentTarget.reset()
+      setError(null)
+      form.reset()
+    } else {
+      console.error("Supabase Error:", error)
+      setError(error.message || "Failed to submit. Please check your connection.")
     }
   }
 
@@ -54,7 +60,8 @@ export default function HeroSection() {
             </h1>
             
             <p className="text-xl md:text-2xl text-slate-300 mb-10 font-light leading-relaxed max-w-xl">
-              Govt-certified grid-connected solar power plants. Generate your own electricity for your home, college, or institute and save big on bills.
+              Govt-certified grid-connected solar power plants. Generate your own electricity for your home, college, or institute and save big on bills. <br/>
+              <span className="text-emerald-400 font-bold">Call: +91 9123456789</span>
             </p>
             
             {/* Trust Indicators */}
@@ -63,13 +70,13 @@ export default function HeroSection() {
                 <div className="w-12 h-12 rounded-full border-2 border-[#0a0f1c] bg-slate-200 flex items-center justify-center font-bold text-slate-700">R</div>
                 <div className="w-12 h-12 rounded-full border-2 border-[#0a0f1c] bg-emerald-200 flex items-center justify-center font-bold text-emerald-700">S</div>
                 <div className="w-12 h-12 rounded-full border-2 border-[#0a0f1c] bg-amber-200 flex items-center justify-center font-bold text-amber-700">P</div>
-                <div className="w-12 h-12 rounded-full border-2 border-[#0a0f1c] bg-white text-slate-800 text-xs font-bold flex items-center justify-center">+500</div>
+                <div className="w-12 h-12 rounded-full border-2 border-[#0a0f1c] bg-white text-slate-800 text-xs font-bold flex items-center justify-center">+5000</div>
               </div>
               <div>
                 <div className="flex gap-1 text-amber-400 mb-1">
                   ⭐⭐⭐⭐⭐
                 </div>
-                <p className="text-sm text-slate-300 font-medium">Trusted by <strong className="text-white">500+</strong> local families</p>
+                <p className="text-sm text-slate-300 font-medium">Trusted by <strong className="text-white">5000+</strong> local families</p>
               </div>
             </div>
           </div>
@@ -110,6 +117,13 @@ export default function HeroSection() {
                   >
                     {loading ? "Processing..." : "Get My Free Quote"}
                   </button>
+
+                  {error && (
+                    <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs font-bold text-center animate-shake">
+                      ⚠️ {error}
+                    </div>
+                  )}
+
                   <p className="text-center text-xs text-slate-500 mt-2 font-medium flex items-center justify-center gap-1.5">
                     <span className="text-emerald-500">🔒</span> Your information is 100% secure.
                   </p>

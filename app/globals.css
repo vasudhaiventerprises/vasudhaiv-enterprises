@@ -46,3 +46,16 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #059669;
 }
+
+.scroll-marquee {
+  animation: scrollMarquee 40s linear infinite;
+}
+
+.scroll-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - 12px)); } /* accounting for the gap */
+}

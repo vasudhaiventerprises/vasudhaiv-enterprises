@@ -10,8 +10,17 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Vasudhaiv Enterprises",
-  description: "Solar Business App",
+  title: "Solar Installation in Allahabad | Vasudhaiv Enterprises",
+  description: "Affordable and reliable solar panel solutions in Prayagraj & UP. Free rooftop survey, 5-year warranty, and instant savings on electricity bills.",
+  manifest: "/manifest.json",
+  icons: {
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: "Vasudhaiv Enterprises | Solar Energy Experts",
+    description: "Switch to Solar and save on every electricity bill. Trusted in Allahabad.",
+    images: ["/og-image.jpg"],
+  }
 }
 
 export default function RootLayout({

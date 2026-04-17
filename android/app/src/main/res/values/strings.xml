@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Vasudhaiv Solar</string>
+    <string name="title_activity_main">Vasudhaiv Solar</string>
+    <string name="package_name">com.vasudhaiv.solar</string>
+    <string name="custom_url_scheme">com.vasudhaiv.solar</string>
+</resources>

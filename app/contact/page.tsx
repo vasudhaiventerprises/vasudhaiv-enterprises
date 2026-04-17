@@ -93,7 +93,7 @@ export default function ContactPage() {
 
           <div className="rounded-3xl overflow-hidden shadow-2xl h-full min-h-[300px] border border-white/10 relative group bg-slate-900">
             <iframe 
-              src="https://maps.google.com/maps?q=615/395+Shri,+Sitapur+Road,+Gayatri+Nagar,+Lucknow,+Uttar+Pradesh+226021&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+              src="https://maps.google.com/maps?q=Vasudhaiv+Enterprises,+Gayatri+Nagar,+Lucknow&t=&z=15&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg) brightness(80%)' }} 

@@ -1,45 +1,72 @@
 "use client"
 import { useState } from "react"
-import { createClient } from "@/lib/supabase"
+import { sanitizeInput, sanitizePhone } from "@/lib/utils"
 
 export default function LeadForm() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const supabase = createClient()
+  const [error, setError] = useState<string | null>(null)
+  const [lastSubmitTime, setLastSubmitTime] = useState<number>(0)
+  const COOLDOWN_MS = 60000 // 1 minute between submissions
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    setLoading(true)
-    const formData = new FormData(e.currentTarget)
-    const payload = {
-      full_name: formData.get("full_name") as string,
-      phone: formData.get("phone") as string,
-      city: formData.get("city") as string,
-      roof_type: formData.get("roof_type") as string,
-      bill_range: formData.get("bill_range") as string,
-      referral_code_used: formData.get("referral_code") as string,
-      message: formData.get("message") as string,
-      status: "new"
-    }
     
-    let referred_by = null
-    if (payload.referral_code_used) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("referral_code", payload.referral_code_used)
-        .single()
-      if (profile) referred_by = profile.id
+    // Client-side rate limit
+    const now = Date.now()
+    if (now - lastSubmitTime < COOLDOWN_MS) {
+      setError("Please wait a minute before submitting again.")
+      return
     }
 
-    const { error } = await supabase
-      .from("leads")
-      .insert({ ...payload, referred_by, status: 'new' })
+    setLoading(true)
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    
+    const payload = {
+      full_name: sanitizeInput(formData.get("full_name") as string),
+      phone: sanitizePhone(formData.get("phone") as string),
+      city: sanitizeInput(formData.get("city") as string),
+      roof_type: sanitizeInput(formData.get("roof_type") as string),
+      bill_range: sanitizeInput(formData.get("bill_range") as string),
+      referral_code_used: sanitizeInput(formData.get("referral_code") as string),
+      message: sanitizeInput(formData.get("message") as string),
+    }
 
-    setLoading(false)
-    if (!error) {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed")
+      }
+
+      // Process Referral extra notification (handled in API now, but if leadId is returned we can do more)
+      if (payload.referral_code_used && result.leadId) {
+         try {
+           await fetch('/api/referral', {
+             method: 'POST',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ referral_code: payload.referral_code_used, lead_id: result.leadId })
+           })
+         } catch (refErr) {
+           console.error("Referral process error:", refErr)
+         }
+      }
+
+      setLastSubmitTime(now)
+      setLoading(false)
       setSuccess(true)
-      e.currentTarget.reset()
+      setError(null)
+      form.reset()
+    } catch (err: any) {
+      setLoading(false)
+      setError(err.message || "Unable to submit request. Please try again.")
     }
   }
 
@@ -158,6 +185,12 @@ export default function LeadForm() {
                   {loading ? "Submitting Request..." : "Request Call Back"}
                 </span>
               </button>
+
+              {error && (
+                <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm font-bold text-center animate-shake">
+                  ⚠️ {error}
+                </div>
+              )}
             </form>
           )}
         </div>

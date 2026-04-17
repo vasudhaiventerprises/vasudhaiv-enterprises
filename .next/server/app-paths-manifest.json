@@ -1,5 +1,26 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/leads/route": "app/api/leads/route.js",
+  "/api/notify/route": "app/api/notify/route.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/api/referral/route": "app/api/referral/route.js",
+  "/admin/clients/[clientId]/page": "app/admin/clients/[clientId]/page.js",
+  "/api/check-role/route": "app/api/check-role/route.js",
+  "/co-admin/page": "app/co-admin/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/savings/page": "app/dashboard/savings/page.js",
+  "/dashboard/profile/page": "app/dashboard/profile/page.js",
+  "/debug-auth/page": "app/debug-auth/page.js",
+  "/dashboard/service/page": "app/dashboard/service/page.js",
+  "/login/page": "app/login/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js",
+  "/staff/page": "app/staff/page.js",
+  "/terms/page": "app/terms/page.js",
+  "/solar-subsidy-disclaimer/page": "app/solar-subsidy-disclaimer/page.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
-  "/services/page": "app/services/page.js",
-  "/contact/page": "app/contact/page.js"
+  "/contact/page": "app/contact/page.js",
+  "/services/page": "app/services/page.js"
 }

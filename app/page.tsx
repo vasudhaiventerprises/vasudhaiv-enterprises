@@ -8,16 +8,16 @@ import FooterSection from "@/components/layout/FooterSection"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Solar Panel Installation in Allahabad | Vasudhaiv Enterprises",
-  description: "Best solar panel installation in Allahabad and Prayagraj. Free rooftop survey. 5-year warranty. Call +91XXXXXXXXXX",
-  keywords: "solar panel allahabad, solar installation prayagraj, rooftop solar uttar pradesh, solar company allahabad",
+  title: "Solar Panel Installation in Uttar Pradesh | Vasudhaiv Enterprises",
+  description: "Best solar panel installation in Uttar Pradesh. Get zero electricity bills with Govt-certified solar power plants. Call +91 9123456789.",
+  keywords: "solar panel allahabad, solar installation prayagraj, rooftop solar uttar pradesh, solar company allahabad, solar subsidy up, zero electricity bill allahabad",
   alternates: {
-    canonical: "https://yourdomain.in"
+    canonical: "https://vasudhaivsolar.com"
   },
   openGraph: {
-    title: "Solar Panel Installation in Allahabad | Vasudhaiv Enterprises",
-    description: "Best solar panel installation in Allahabad and Prayagraj. Free rooftop survey. 5-year warranty. Call +91XXXXXXXXXX",
-    url: "https://yourdomain.in",
+    title: "Solar Panel Installation in Uttar Pradesh | Vasudhaiv Enterprises",
+    description: "Best solar panel installation in Uttar Pradesh. Govt-certified grid-connected solar power plants. Save big on bills.",
+    url: "https://vasudhaivsolar.com",
     type: "website",
     images: [{ url: "/og-image.jpg" }]
   },

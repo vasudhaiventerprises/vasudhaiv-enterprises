@@ -34,6 +34,7 @@ const config: Config = {
         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
         'blob': 'blob 7s infinite',
         'float': 'float 6s ease-in-out infinite',
+        'marquee': 'marquee 40s linear infinite',
       },
       keyframes: {
         fadeInUp: {
@@ -53,6 +54,10 @@ const config: Config = {
         kenBurns: {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' }
+        },
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' }
         }
       }
     },
