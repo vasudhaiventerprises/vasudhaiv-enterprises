@@ -3,6 +3,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { Bell, Search, Filter, MoreHorizontal, CheckCircle2, Clock, AlertCircle } from 'lucide-react'
+import AdminClient from './AdminClient'
 
 export default async function AdminDashboard() {
   const user = await getUserProfile()

@@ -95,7 +95,7 @@ export default function AdminLoginPage() {
 
            {error && (
              <div className="mb-8 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-500 text-xs font-mono font-bold leading-relaxed shadow-[0_0_15px_rgba(239,68,68,0.2)] animate-pulse">
-               > ERR: {error}
+               &gt; ERR: {error}
              </div>
            )}
 

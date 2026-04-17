@@ -1,0 +1,8 @@
+vasudhaiv-mobile
+venv
+.next
+node_modules
+android
+ios
+capacitor.config.ts
+vasudhaiv-mobile/node_modules
