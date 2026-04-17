@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 // Direct client — referral API can be called without user session
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
 
 export async function POST(request: Request) {
   try {
@@ -16,7 +18,7 @@ export async function POST(request: Request) {
     }
 
     // 1. Find the user with this referral code
-    const { data: profile, error: profileErr } = await supabase
+    const { data: profile, error: profileErr } = await getSupabase()
       .from('profiles')
       .select('id, full_name')
       .ilike('referral_code', referral_code.trim())
@@ -27,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Track the referral in the referrals table
-    const { error: insertErr } = await supabase
+    const { error: insertErr } = await getSupabase()
       .from('referrals')
       .insert({
         referrer_id: profile.id,
@@ -42,7 +44,7 @@ export async function POST(request: Request) {
     }
 
     // 3. Update the lead with the referrer_id for cross-referencing
-    await supabase
+    await getSupabase()
       .from('leads')
       .update({ referred_by: profile.id })
       .eq('id', lead_id)

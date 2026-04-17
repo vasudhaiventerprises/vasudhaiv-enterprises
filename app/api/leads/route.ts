@@ -4,10 +4,12 @@ import { sanitizeInput, sanitizePhone } from '@/lib/utils'
 
 // Use a direct Supabase client (NOT the cookie-based SSR one)
 // Lead capture is anonymous — no user session exists
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
+}
 
 const rateLimitMap = new Map<string, number[]>()
 
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
     // Referral logic
     let referred_by = null
     if (payload.referral_code_used) {
-      const { data: profile } = await supabase
+      const { data: profile } = await getSupabase()
         .from("profiles")
         .select("id")
         .ilike("referral_code", payload.referral_code_used.trim())
@@ -70,7 +72,7 @@ export async function POST(req: NextRequest) {
       if (profile) referred_by = profile.id
     }
 
-    const { data: newLead, error: insertError } = await supabase
+    const { data: newLead, error: insertError } = await getSupabase()
       .from("leads")
       .insert({ ...payload, referred_by })
       .select('id')
