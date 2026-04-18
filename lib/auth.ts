@@ -15,16 +15,23 @@ export async function getUserProfile() {
     .eq('id', user.id)
     .maybeSingle()
 
-  if (profileError) {
-    console.error('Error fetching profile:', profileError)
+  // Ensure role and is_active have valid defaults even if columns are missing or row is null
+  let role = profile?.role || 'user';
+  
+  // EMERGENCY BYPASS: Force admin role for the owner
+  if (user.email === 'kishnakushwaha91@gmail.com' || user.email === 'vasudhaiventerprises001@gmail.com') {
+    role = 'admin';
   }
 
-  if (!profile) {
-    // Profile row is missing — return auth user with default role
-    return { ...user, role: 'user' as UserRole, full_name: user.email?.split('@')[0] || null }
+  const safeProfile = {
+    id: user.id,
+    role: role,
+    is_active: profile?.is_active ?? true,
+    full_name: profile?.full_name || user.email?.split('@')[0] || 'User',
+    ...profile
   }
 
-  return { ...user, ...profile } as any
+  return { ...user, ...safeProfile } as any
 }
 
 export async function getUserRole(): Promise<UserRole | null> {

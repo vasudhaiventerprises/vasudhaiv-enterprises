@@ -21,54 +21,43 @@ export default async function AdminDashboard() {
     redirect('/dashboard')
   }
 
-  // Fetch lead stats
-  const { count: newLeadsCount } = await supabase
-    .from('leads')
-    .select('*', { count: 'exact', head: true })
+  // Fetch data with error handling to prevent page crashes
+  const safeGetCount = async (table: string, filter?: (q: any) => any) => {
+    try {
+      let query = supabase.from(table).select('*', { count: 'exact', head: true });
+      if (filter) query = filter(query);
+      const { count, error } = await query;
+      if (error) throw error;
+      return count || 0;
+    } catch (e) {
+      console.error(`Error fetching count for ${table}:`, e);
+      return 0;
+    }
+  };
 
-  const { count: clientsCount } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .eq('role', 'user')
+  const [newLeadsCount, clientsCount, requestsCount, staffCount, referralsCount] = await Promise.all([
+    safeGetCount('leads'),
+    safeGetCount('profiles', (q) => q.eq('role', 'user')),
+    safeGetCount('service_requests', (q) => q.neq('status', 'completed')),
+    safeGetCount('profiles', (q) => q.eq('role', 'staff')),
+    safeGetCount('referrals')
+  ]);
 
-  const { count: requestsCount } = await supabase
-    .from('service_requests')
-    .select('*', { count: 'exact', head: true })
-    .neq('status', 'completed')
-
-  const { count: staffCount } = await supabase
-    .from('profiles')
-    .select('*', { count: 'exact', head: true })
-    .eq('role', 'staff')
-
-  const { count: referralsCount } = await supabase
-    .from('referrals')
-    .select('*', { count: 'exact', head: true })
-
-  // Fetch latest leads
-  const { data: leads } = await supabase
-    .from('leads')
-    .select('*')
-    .order('created_at', { ascending: false })
-
-  // Fetch clients
-  const { data: clients } = await supabase
-    .from('profiles')
-    .select('id, full_name, phone, city')
-    .eq('role', 'user')
-    .order('created_at', { ascending: false })
+  // Fetch latest leads and clients with safety
+  const { data: leads } = await supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(50);
+  const { data: clients } = await supabase.from('profiles').select('id, full_name, phone, city').eq('role', 'user').order('created_at', { ascending: false }).limit(50);
 
   const initialData = {
     counts: {
-      leads: newLeadsCount || 0,
-      clients: clientsCount || 0,
-      requests: requestsCount || 0,
-      staff: staffCount || 0,
-      referrals: referralsCount || 0
+      leads: newLeadsCount,
+      clients: clientsCount,
+      requests: requestsCount,
+      staff: staffCount,
+      referrals: referralsCount
     },
     leads: leads || [],
     clients: clients || []
-  }
+  };
 
   return (
     <DashboardLayout role="admin">

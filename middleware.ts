@@ -48,12 +48,14 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const pathname = request.nextUrl.pathname
-
-  // Protected routes list
   const protectedRoutes = ['/dashboard', '/admin', '/staff', '/co-admin']
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
-  if (isProtectedRoute && !user) {
+  // Robust path normalization for Production (handles trailing slashes)
+  const normalizedPath = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
+  const isAuthPage = normalizedPath.endsWith('/login') || normalizedPath === '/auth/callback' || normalizedPath === '/login'
+
+  if (isProtectedRoute && !isAuthPage && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('next', pathname)

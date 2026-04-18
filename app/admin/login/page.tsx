@@ -28,43 +28,48 @@ export default function AdminLoginPage() {
     })
 
     if (signInError) {
-      setError(signInError.message.includes('Invalid login') 
-        ? 'Access Denied: Invalid credentials.' 
-        : signInError.message)
+      console.error('Login Error:', signInError)
+      setError(`AUTH_ERR: ${signInError.message} (Code: ${signInError.status || 'Unknown'})`)
       setLoading(false)
       return
     }
 
-    // Role Enforcement
+    // Role Enforcement & Diagnostics
     let role = 'user'
+    let profileData = null
     try {
-      const roleRes = await fetch('/api/check-role')
-      if (roleRes.ok) {
-        const roleData = await roleRes.json()
-        role = roleData.role || 'user'
-      }
-    } catch {
       if (signInData.user) {
-        const { data: profile } = await supabase
+        const { data: profile, error: pErr } = await supabase
           .from('profiles')
-          .select('role')
+          .select('*')
           .eq('id', signInData.user.id)
           .maybeSingle()
+        
+        if (pErr) console.error('Profile Fetch Error:', pErr)
+        profileData = profile
         role = profile?.role || 'user'
       }
+    } catch (err) {
+      console.error('Role check catch:', err)
     }
 
     if (role !== 'admin' && role !== 'staff' && role !== 'co_admin') {
       await supabase.auth.signOut()
-      setError("SECURITY INCIDENT: Unauthorized access attempt logged. You do not have staff clearance.")
+      const debugInfo = profileData 
+        ? `Found Profile but role is "${role}"` 
+        : "No Profile row found in DB for this User ID."
+      setError(`ACCESS_DENIED: ${debugInfo}`)
       setLoading(false)
       return
     }
 
-    router.refresh()
-    if (role === 'admin') router.push('/admin')
-    else if (role === 'staff') router.push('/staff')
-    else if (role === 'co_admin') router.push('/co-admin')
+    setError(`SUCCESS: Identity confirmed. Entering subsystem...`)
+    
+    // Direct redirect without blocking refresh
+    if (role === 'admin') window.location.href = '/admin'
+    else if (role === 'staff') window.location.href = '/staff'
+    else if (role === 'co_admin') window.location.href = '/co-admin'
+    else window.location.href = '/dashboard'
   }
 
   return (
