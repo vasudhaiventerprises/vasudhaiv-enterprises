@@ -48,6 +48,23 @@ export default function AdminLoginPage() {
         if (pErr) console.error('Profile Fetch Error:', pErr)
         profileData = profile
         role = profile?.role || 'user'
+
+        // EMERGENCY BYPASS: Force admin for master emails
+        const masterAdmins = ['kishnakushwaha91@gmail.com', 'vasudhaiventerprises001@gmail.com', 'anshu@gmail.com']
+        const userEmail = signInData.user.email?.toLowerCase()
+        if (userEmail && masterAdmins.includes(userEmail)) {
+          role = 'admin'
+        }
+
+        // Auto-create profile if missing
+        if (!profile && signInData.user) {
+          await supabase.from('profiles').upsert({
+            id: signInData.user.id,
+            full_name: signInData.user.email?.split('@')[0] || 'Admin',
+            role: role,
+            is_active: true,
+          }, { onConflict: 'id' })
+        }
       }
     } catch (err) {
       console.error('Role check catch:', err)

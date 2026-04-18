@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Service Worker Killer</title>
+  <style>
+    body { background: #000; color: #0f0; font-family: monospace; padding: 40px; }
+    h1 { color: #ff0; }
+    #log { background: #111; padding: 20px; border: 1px solid #333; white-space: pre-wrap; min-height: 300px; margin-top: 20px; }
+    button { background: #f00; color: #fff; border: none; padding: 15px 30px; font-size: 18px; cursor: pointer; margin: 10px; font-weight: bold; }
+    .success { color: #0f0; }
+    .error { color: #f00; }
+  </style>
+</head>
+<body>
+  <h1>⚠️ SERVICE WORKER NUCLEAR RESET ⚠️</h1>
+  <p>This page will destroy all cached data and service workers.</p>
+  <button onclick="nukeEverything()">🔥 NUKE EVERYTHING 🔥</button>
+  <button onclick="window.location.href='/admin/login'">Go to Admin Login</button>
+  <div id="log">Waiting for command...</div>
+
+  <script>
+    var log = document.getElementById('log');
+    function addLog(msg, isError) {
+      var line = document.createElement('div');
+      line.className = isError ? 'error' : 'success';
+      line.textContent = '[' + new Date().toLocaleTimeString() + '] ' + msg;
+      log.appendChild(line);
+    }
+
+    async function nukeEverything() {
+      addLog('Starting nuclear cleanup...');
+      
+      // 1. Unregister ALL service workers
+      try {
+        var registrations = await navigator.serviceWorker.getRegistrations();
+        addLog('Found ' + registrations.length + ' service worker(s)');
+        for (var reg of registrations) {
+          await reg.unregister();
+          addLog('✅ Unregistered SW: ' + reg.scope);
+        }
+      } catch(e) {
+        addLog('SW cleanup error: ' + e.message, true);
+      }
+
+      // 2. Clear ALL caches
+      try {
+        var cacheNames = await caches.keys();
+        addLog('Found ' + cacheNames.length + ' cache(s)');
+        for (var name of cacheNames) {
+          await caches.delete(name);
+          addLog('✅ Deleted cache: ' + name);
+        }
+      } catch(e) {
+        addLog('Cache cleanup error: ' + e.message, true);
+      }
+
+      // 3. Clear localStorage and sessionStorage
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        addLog('✅ Cleared localStorage and sessionStorage');
+      } catch(e) {
+        addLog('Storage cleanup error: ' + e.message, true);
+      }
+
+      // 4. Clear cookies
+      try {
+        document.cookie.split(";").forEach(function(c) {
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        addLog('✅ Cleared all cookies');
+      } catch(e) {
+        addLog('Cookie cleanup error: ' + e.message, true);
+      }
+
+      addLog('');
+      addLog('🎉 CLEANUP COMPLETE! Click "Go to Admin Login" now.');
+      addLog('Or refresh any page - React should work now!');
+    }
+
+    // Auto-run on load
+    addLog('Page loaded. Click NUKE EVERYTHING to start.');
+    
+    // Show current SW status
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(regs) {
+        addLog('Currently registered service workers: ' + regs.length);
+        regs.forEach(function(r) {
+          addLog('  - Scope: ' + r.scope + ' Active: ' + (r.active ? r.active.state : 'none'));
+        });
+      });
+    } else {
+      addLog('Service Workers not supported in this browser');
+    }
+  </script>
+</body>
+</html>
