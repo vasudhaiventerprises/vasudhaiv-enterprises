@@ -142,19 +142,122 @@ BEGIN
 END;
 $$;
 
--- 6. Ensure your master admin account exists
+-- 6. Admin: Update user profile (bypasses RLS)
+CREATE OR REPLACE FUNCTION public.admin_update_profile(
+  target_user_id uuid,
+  new_name text,
+  new_phone text,
+  new_city text
+)
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  caller_role text;
+BEGIN
+  SELECT role INTO caller_role FROM public.profiles WHERE id = auth.uid();
+  IF caller_role != 'admin' THEN
+    RAISE EXCEPTION 'Unauthorized';
+  END IF;
+
+  UPDATE public.profiles 
+  SET full_name = new_name,
+      phone = new_phone,
+      city = new_city
+  WHERE id = target_user_id;
+
+  RETURN json_build_object('success', true);
+END;
+$$;
+
+-- 7. Admin: Toggle user status (is_active)
+CREATE OR REPLACE FUNCTION public.admin_set_user_status(target_user_id uuid, active_status boolean)
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  caller_role text;
+BEGIN
+  SELECT role INTO caller_role FROM public.profiles WHERE id = auth.uid();
+  IF caller_role != 'admin' THEN
+    RAISE EXCEPTION 'Unauthorized';
+  END IF;
+
+  IF target_user_id = auth.uid() THEN
+    RAISE EXCEPTION 'Cannot deactivate yourself';
+  END IF;
+
+  UPDATE public.profiles SET is_active = active_status WHERE id = target_user_id;
+
+  RETURN json_build_object('success', true, 'is_active', active_status);
+END;
+$$;
+
+-- 8. Admin: Delete User (Permanent - USE WITH CAUTION)
+CREATE OR REPLACE FUNCTION public.admin_delete_user(target_user_id uuid)
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  caller_role text;
+BEGIN
+  -- 1. Check if caller is admin
+  SELECT role INTO caller_role FROM public.profiles WHERE id = auth.uid();
+  IF caller_role != 'admin' THEN
+    RAISE EXCEPTION 'Unauthorized';
+  END IF;
+
+  -- 2. Prevent self-deletion
+  IF target_user_id = auth.uid() THEN
+    RAISE EXCEPTION 'Cannot delete yourself';
+  END IF;
+
+  -- 3. Delete from public schema tables (Profiles, Leads, Referrals, etc.)
+  -- Note: Service requests, leads etc. should be handled by ON DELETE CASCADE or manually
+  DELETE FROM public.referrals WHERE referrer_id = target_user_id;
+  DELETE FROM public.service_requests WHERE client_id = target_user_id;
+  DELETE FROM public.profiles WHERE id = target_user_id;
+
+  -- 4. Finally delete from auth.users (requires service role / superuser level)
+  -- Since we are SECURITY DEFINER as a database user, we can delete from auth if granted.
+  -- Most Supabase projects allow this if the function is set up correctly.
+  DELETE FROM auth.users WHERE id = target_user_id;
+
+  RETURN json_build_object('success', true);
+END;
+$$;
+
+-- 9. Add missing columns to profiles if they don't exist
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'is_active') THEN
+    ALTER TABLE public.profiles ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'city') THEN
+    ALTER TABLE public.profiles ADD COLUMN city TEXT;
+  END IF;
+
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'profiles' AND column_name = 'address') THEN
+    ALTER TABLE public.profiles ADD COLUMN address TEXT;
+  END IF;
+END $$;
+
+-- 10. Ensure master admin
 INSERT INTO public.profiles (id, full_name, role)
 SELECT id, 'Admin', 'admin' 
 FROM auth.users 
 WHERE email = 'vasudhaiventerprises001@gmail.com'
 ON CONFLICT (id) DO UPDATE SET role = 'admin';
 
--- 7. Ensure profiles INSERT policy exists for new signups
+-- 11. Policies
 DROP POLICY IF EXISTS "user_insert_own_profile" ON public.profiles;
-CREATE POLICY "user_insert_own_profile" ON public.profiles
-  FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "user_insert_own_profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
--- 8. Ensure service_requests INSERT policy exists
 DROP POLICY IF EXISTS "user_insert_requests" ON public.service_requests;
-CREATE POLICY "user_insert_requests" ON public.service_requests
-  FOR INSERT WITH CHECK (auth.uid() = client_id);
+CREATE POLICY "user_insert_requests" ON public.service_requests FOR INSERT WITH CHECK (auth.uid() = client_id);

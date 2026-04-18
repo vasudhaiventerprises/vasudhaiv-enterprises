@@ -6,7 +6,8 @@ const config: CapacitorConfig = {
   webDir: 'public', // Unused dynamically since we point to a server URL
   server: {
     url: 'https://vasudhaiv-enterprises.vercel.app',
-    cleartext: true
+    cleartext: true,
+    allowNavigation: ['vasudhaiv-enterprises.vercel.app', 'odkkmrmunpxxifggcptr.supabase.co']
   },
   android: {
     backgroundColor: '#020617'

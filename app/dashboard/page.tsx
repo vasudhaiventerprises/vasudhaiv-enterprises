@@ -13,9 +13,15 @@ export default async function ClientDashboard() {
     redirect('/login')
   }
 
-  // Auto-redirect if they are actually an admin
+  // Auto-redirect if they are not a standard user
   if (user.role === 'admin') {
     redirect('/admin')
+  }
+  if (user.role === 'staff') {
+    redirect('/staff')
+  }
+  if (user.role === 'co_admin') {
+    redirect('/co-admin')
   }
 
   const supabase = await createClient()

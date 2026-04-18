@@ -18,6 +18,10 @@ export default function UnifiedLoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [loginMethod, setLoginMethod] = useState<'password' | 'otp'>('password')
+  const [sendingOtp, setSendingOtp] = useState(false)
+  const [isForgotPassword, setIsForgotPassword] = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
   
   const router = useRouter()
   const supabase = createClient()
@@ -56,11 +60,10 @@ export default function UnifiedLoginPage() {
     })
 
     if (signInError) {
-      // Friendly error messages
-      if (signInError.message.includes('Invalid login')) {
-        setError('Wrong email or password. Double check and try again.')
-      } else if (signInError.message.includes('Email not confirmed')) {
-        setError('Please check your email inbox and click the confirmation link first.')
+      if (signInError.message.toLowerCase().includes('email not confirmed')) {
+        setError('Please check your email inbox and click the verification link before signing in.')
+      } else if (signInError.message.includes('Invalid login')) {
+        setError('Invalid email/phone or password. Please try again.')
       } else {
         setError(signInError.message)
       }
@@ -89,10 +92,84 @@ export default function UnifiedLoginPage() {
     }
 
     router.refresh()
-    if (role === 'admin') router.push('/admin')
-    else if (role === 'staff') router.push('/staff')
-    else if (role === 'co_admin') router.push('/co-admin')
-    else router.push('/dashboard')
+    
+    // Check for redirect parameter
+    const searchParams = typeof window !== 'undefined' ? new URL(window.location.href).searchParams : null
+    const nextPath = searchParams?.get('next')
+
+    if (nextPath) {
+      router.push(nextPath)
+    } else if (role === 'admin') {
+      router.push('/admin')
+    } else if (role === 'staff') {
+      router.push('/staff')
+    } else if (role === 'co_admin') {
+      router.push('/co-admin')
+    } else {
+      router.push('/dashboard')
+    }
+  }
+
+  async function handleSendOTP() {
+    if (!identifier.trim()) {
+      setError('Please enter your email or phone first.')
+      return
+    }
+
+    setSendingOtp(true)
+    setError(null)
+    setSuccess(null)
+
+    let otpEmail = identifier.trim()
+
+    // Resolve phone to email if needed
+    if (isPhone(otpEmail)) {
+      const { data, error: rpcError } = await supabase.rpc('get_email_by_phone', { phone_input: otpEmail.replace(/\s/g, '') })
+      if (rpcError || !data) {
+        setError('No account found for this phone. Please use email.')
+        setSendingOtp(false)
+        return
+      }
+      otpEmail = data
+    }
+
+    const { error: otpError } = await supabase.auth.signInWithOtp({
+      email: otpEmail,
+      options: {
+        emailRedirectTo: window.location.origin + '/dashboard',
+      }
+    })
+
+    if (otpError) {
+      setError(otpError.message)
+      setSendingOtp(false)
+    } else {
+      setSuccess('Magic Link sent! Please check your email inbox to log in instantly.')
+      setSendingOtp(false)
+    }
+  }
+
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault()
+    if (!identifier.trim()) {
+      setError('Please enter your email to reset your password.')
+      return
+    }
+
+    setResetLoading(true)
+    setError(null)
+    setSuccess(null)
+
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(identifier.trim(), {
+      redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+    })
+
+    if (resetError) {
+      setError(resetError.message)
+    } else {
+      setSuccess('Password reset link sent! Please check your email inbox.')
+    }
+    setResetLoading(false)
   }
 
   async function handleSignup(e: React.FormEvent) {
@@ -167,25 +244,12 @@ export default function UnifiedLoginPage() {
       }, { onConflict: 'id' })
     }
 
-    // Try to sign in immediately (works if email confirmation is disabled)
-    const { error: autoSignInError } = await supabase.auth.signInWithPassword({
-      email: trimmedEmail,
-      password,
-    })
-
-    if (autoSignInError) {
-      // Email confirmation is likely required
-      setSuccess("Account created! Please check your email inbox and click the confirmation link, then come back and sign in.")
-      setMode('login')
-      setIdentifier(trimmedEmail)
-      setPassword('')
-      setLoading(false)
-      return
-    }
-
-    // Auto-login succeeded
-    router.refresh()
-    router.push('/dashboard')
+    // Success state - since confirmation is required, we don't auto-login
+    setSuccess("Account created! 📧 Please check your email inbox and click the verification link to activate your account.")
+    setMode('login')
+    setIdentifier(trimmedEmail)
+    setPassword('')
+    setLoading(false)
   }
 
   return (
@@ -237,58 +301,135 @@ export default function UnifiedLoginPage() {
             </div>
           )}
 
-          {/* ====== LOGIN FORM ====== */}
-          {mode === 'login' && (
-            <form onSubmit={handleLogin} className="space-y-5">
-              <div>
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
-                  Email or Phone Number
-                </label>
-                <div className="relative">
-                  <input 
-                    required 
-                    type="text" 
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    className="w-full rounded-xl px-4 py-3.5 pl-11 text-white transition-all font-medium focus:outline-none bg-slate-900/50 border border-white/10 placeholder-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
-                    placeholder="email@gmail.com or 9876543210"
-                  />
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
-                    {isPhone(identifier) ? <Phone size={16} /> : <Mail size={16} />}
-                  </div>
-                </div>
+          {/* ====== FORGOT PASSWORD FORM ====== */}
+          {mode === 'login' && isForgotPassword && (
+            <form onSubmit={handleForgotPassword} className="space-y-5">
+              <div className="text-center mb-6">
+                <Shield size={32} className="mx-auto text-emerald-500 mb-3 opacity-50" />
+                <h3 className="text-lg font-bold text-white">Reset Password</h3>
+                <p className="text-slate-400 text-xs">Enter your email and we'll send a recovery link.</p>
               </div>
 
               <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Email Address</label>
+                <input 
+                  required 
+                  type="email" 
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-medium"
+                  placeholder="name@email.com"
+                />
+              </div>
+
+              <button 
+                disabled={resetLoading}
+                type="submit" 
+                className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold rounded-xl shadow-lg shadow-emerald-500/20 transition-all active:scale-[0.98] disabled:opacity-50"
+              >
+                {resetLoading ? 'Sending Reset Link...' : 'Send Reset Link'}
+              </button>
+
+              <button 
+                type="button"
+                onClick={() => { setIsForgotPassword(false); setError(null); setSuccess(null); }}
+                className="w-full text-slate-500 hover:text-white text-xs font-bold transition-colors"
+              >
+                Back to Sign In
+              </button>
+            </form>
+          )}
+
+          {/* ====== LOGIN FORM ====== */}
+          {mode === 'login' && !isForgotPassword && (
+            <div className="space-y-5">
+              <div className="flex justify-center mb-4">
+                <div className="bg-white/5 p-1 rounded-xl border border-white/5 w-full flex">
+                  <button 
+                    onClick={() => setLoginMethod('password')}
+                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${loginMethod === 'password' ? 'bg-emerald-500 text-black' : 'text-slate-500'}`}
+                  >
                     Password
-                  </label>
-                  <Link href="#" className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300">Forgot?</Link>
-                </div>
-                <div className="relative">
-                  <input 
-                    required 
-                    type={showPassword ? 'text' : 'password'} 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl px-4 py-3.5 pr-11 text-white transition-all focus:outline-none bg-slate-900/50 border border-white/10 placeholder-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-medium"
-                    placeholder="••••••••" 
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                  <button 
+                    onClick={() => setLoginMethod('otp')}
+                    className={`flex-1 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${loginMethod === 'otp' ? 'bg-emerald-500 text-black' : 'text-slate-500'}`}
+                  >
+                    Free OTP (Magic Link)
                   </button>
                 </div>
               </div>
 
-              <button 
-                disabled={loading}
-                type="submit" 
-                className="w-full py-4 font-extrabold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
-              >
-                {loading ? <span className="animate-pulse">Authenticating...</span> : 'Sign In'}
-              </button>
-            </form>
+              <form onSubmit={handleLogin} className="space-y-5">
+                <div>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
+                    Email or Phone Number
+                  </label>
+                  <div className="relative">
+                    <input 
+                      required 
+                      type="text" 
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      className="w-full rounded-xl px-4 py-3.5 pl-11 text-white transition-all font-medium focus:outline-none bg-slate-900/50 border border-white/10 placeholder-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+                      placeholder="email@gmail.com or 9876543210"
+                    />
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+                      {isPhone(identifier) ? <Phone size={16} /> : <Mail size={16} />}
+                    </div>
+                  </div>
+                </div>
+
+                {loginMethod === 'password' ? (
+                  <>
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500">
+                          Password
+                        </label>
+                        <button 
+                          type="button"
+                          onClick={() => { setIsForgotPassword(true); setError(null); setSuccess(null); }}
+                          className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300"
+                        >
+                          Forgot?
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input 
+                          required 
+                          type={showPassword ? 'text' : 'password'} 
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className="w-full rounded-xl px-4 py-3.5 pr-11 text-white transition-all focus:outline-none bg-slate-900/50 border border-white/10 placeholder-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 font-medium"
+                          placeholder="••••••••" 
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button 
+                      disabled={loading}
+                      type="submit" 
+                      className="w-full py-4 font-extrabold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                    >
+                      {loading ? <span className="animate-pulse">Authenticating...</span> : 'Sign In'}
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    type="button"
+                    disabled={sendingOtp}
+                    onClick={handleSendOTP}
+                    className="w-full py-4 font-extrabold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black shadow-lg shadow-emerald-500/20 active:scale-[0.98]"
+                  >
+                    {sendingOtp ? <span className="animate-pulse">Sending Link...</span> : 'Send Magic Link Email'}
+                  </button>
+                )}
+              </form>
+            </div>
           )}
 
           {/* ====== SIGNUP FORM ====== */}

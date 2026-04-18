@@ -233,6 +233,7 @@ export default function AdminClient({ initialData }: { initialData: any }) {
     const [updatingId, setUpdatingId] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState('')
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+    const [editingUser, setEditingUser] = useState<any>(null)
 
     const loadUsers = async () => {
       setLoadingUsers(true)
@@ -256,6 +257,61 @@ export default function AdminClient({ initialData }: { initialData: any }) {
       if (!error) {
         setAllUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u))
         setMessage({ type: 'success', text: `Role updated to "${newRole}" successfully!` })
+      } else {
+        setMessage({ type: 'error', text: error.message })
+      }
+      setUpdatingId(null)
+    }
+
+    const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!editingUser) return
+      setUpdatingId(editingUser.id)
+      const formData = new FormData(e.currentTarget)
+      const name = formData.get('full_name') as string
+      const phone = formData.get('phone') as string
+      const city = formData.get('city') as string
+
+      const { error } = await supabase.rpc('admin_update_profile', {
+        target_user_id: editingUser.id,
+        new_name: name,
+        new_phone: phone,
+        new_city: city
+      })
+
+      if (!error) {
+        setAllUsers(prev => prev.map(u => u.id === editingUser.id ? { ...u, full_name: name, phone, city } : u))
+        setMessage({ type: 'success', text: 'User profile updated!' })
+        setEditingUser(null)
+      } else {
+        setMessage({ type: 'error', text: error.message })
+      }
+      setUpdatingId(null)
+    }
+
+    const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
+      setUpdatingId(userId)
+      const { error } = await supabase.rpc('admin_set_user_status', {
+        target_user_id: userId,
+        active_status: !currentStatus
+      })
+
+      if (!error) {
+        setAllUsers(prev => prev.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u))
+        setMessage({ type: 'success', text: `User ${!currentStatus ? 'activated' : 'deactivated'} successfully.` })
+      } else {
+        setMessage({ type: 'error', text: error.message })
+      }
+      setUpdatingId(null)
+    }
+
+    const handleDeleteUser = async (userId: string) => {
+      if (!confirm('Are you sure you want to PERMANENTLY delete this user? This cannot be undone.')) return
+      setUpdatingId(userId)
+      const { error } = await supabase.rpc('admin_delete_user', { target_user_id: userId })
+      if (!error) {
+        setAllUsers(prev => prev.filter(u => u.id !== userId))
+        setMessage({ type: 'success', text: 'User account and all data deleted permanentally.' })
       } else {
         setMessage({ type: 'error', text: error.message })
       }
@@ -337,41 +393,71 @@ export default function AdminClient({ initialData }: { initialData: any }) {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/[0.02] border-b border-white/5">
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">User</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Contact</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Current Role</th>
-                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Change Role</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">User Infomation</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Access Level</th>
+                  <th className="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Control Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {filteredUsers.map((user: any) => (
-                  <tr key={user.id} className="hover:bg-white/[0.02] transition-colors">
+                  <tr key={user.id} className={`hover:bg-white/[0.02] transition-colors ${!user.is_active ? 'opacity-40 grayscale' : ''}`}>
                     <td className="px-6 py-4">
-                      <span className="font-bold text-white block">{user.full_name || 'Unnamed'}</span>
-                      <span className="text-[10px] text-slate-600 font-mono">{user.id.substring(0, 8)}</span>
+                       <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${roleColors[user.role] || roleColors.user}`}>
+                             {user.full_name?.substring(0, 2).toUpperCase() || '??'}
+                          </div>
+                          <div>
+                            <span className="font-bold text-white block">{user.full_name || 'Unnamed'}</span>
+                            <span className="text-xs text-slate-400 font-medium block">{user.email}</span>
+                          </div>
+                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-slate-300 block">{user.email}</span>
-                      <span className="text-xs text-slate-500">{user.phone || 'No phone'}</span>
+                       <div className="flex flex-col gap-2">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest w-fit ${roleColors[user.role] || roleColors.user}`}>
+                            {roleIcons[user.role]} {user.role?.replace('_', ' ')}
+                          </span>
+                          <span className="text-[10px] text-slate-600 font-mono">ID: {user.id.substring(0, 8)}</span>
+                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-[10px] font-black uppercase tracking-widest ${roleColors[user.role] || roleColors.user}`}>
-                        {roleIcons[user.role]} {user.role?.replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        disabled={updatingId === user.id}
-                        className="bg-black border border-white/10 text-white text-xs font-bold px-3 py-2 rounded-lg focus:outline-none focus:border-primary-500/50 disabled:opacity-50 cursor-pointer"
-                      >
-                        <option value="user">👤 Client</option>
-                        <option value="staff">🔧 Staff</option>
-                        <option value="co_admin">🛡️ Co-Admin</option>
-                        <option value="admin">👑 Admin</option>
-                      </select>
-                      {updatingId === user.id && <span className="ml-2 text-xs text-primary-400 animate-pulse">Updating...</span>}
+                       <div className="flex flex-wrap items-center gap-2">
+                          <select
+                            value={user.role}
+                            onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                            disabled={updatingId === user.id || !user.is_active}
+                            className="bg-black border border-white/10 text-white text-[10px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:border-primary-500/50 disabled:opacity-50"
+                          >
+                            <option value="user">USER</option>
+                            <option value="staff">STAFF</option>
+                            <option value="co_admin">CO-ADMIN</option>
+                            <option value="admin">ADMIN</option>
+                          </select>
+                          
+                          <button 
+                            onClick={() => setEditingUser(user)}
+                            className="p-2 bg-white/5 border border-white/10 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                            title="Edit Profile"
+                          >
+                             <Settings size={14} />
+                          </button>
+
+                          <button 
+                            onClick={() => toggleUserStatus(user.id, user.is_active)}
+                            className={`p-2 border rounded-lg transition-all ${user.is_active ? 'bg-amber-500/10 border-amber-500/20 text-amber-500 hover:bg-amber-500/20' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/20'}`}
+                            title={user.is_active ? 'Suspend Account' : 'Activate Account'}
+                          >
+                             <Activity size={14} />
+                          </button>
+
+                          <button 
+                            onClick={() => handleDeleteUser(user.id)}
+                            className="p-2 bg-red-500/5 border border-red-500/20 rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
+                            title="Permanent Delete"
+                          >
+                             <AlertCircle size={14} />
+                          </button>
+                       </div>
                     </td>
                   </tr>
                 ))}
@@ -598,12 +684,107 @@ export default function AdminClient({ initialData }: { initialData: any }) {
      )
   }
 
+  // ===== SERVICE REQUESTS TAB =====
+  const ServiceTab = () => {
+     const [requests, setRequests] = useState<any[]>([])
+     const [loading, setLoading] = useState(false)
+     const [loaded, setLoaded] = useState(false)
+     const [updatingId, setUpdatingId] = useState<string | null>(null)
+
+     const loadRequests = async () => {
+        setLoading(true)
+        const { data, error } = await supabase
+           .from('service_requests')
+           .select('*, client:profiles!client_id(full_name, phone)')
+           .order('created_at', { ascending: false })
+        
+        if (!error && data) setRequests(data)
+        setLoading(false)
+        setLoaded(true)
+     }
+
+     const updateRequestStatus = async (id: string, status: string) => {
+        setUpdatingId(id)
+        const { error } = await supabase.from('service_requests').update({ status }).eq('id', id)
+        if (!error) {
+           setRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r))
+        }
+        setUpdatingId(id === updatingId ? null : updatingId)
+     }
+
+     if (!loaded) {
+        return (
+           <div className="text-center py-20">
+              <button onClick={loadRequests} disabled={loading} className="px-10 py-4 bg-emerald-500 text-black font-black rounded-2xl shadow-xl shadow-emerald-500/20 active:scale-95 transition-all">
+                 {loading ? 'Consulting Records...' : 'Inspect Fleet Service Requests'}
+              </button>
+           </div>
+        )
+     }
+
+     return (
+        <div className="bg-white/5 border border-white/10 rounded-[2.5rem] overflow-hidden shadow-2xl backdrop-blur-xl">
+           <table className="w-full text-left border-collapse">
+              <thead>
+                 <tr className="bg-white/[0.02] border-b border-white/5">
+                    <th className="px-6 py-5 text-xs font-black uppercase tracking-[0.2em] text-slate-500">Client / Contact</th>
+                    <th className="px-6 py-5 text-xs font-black uppercase tracking-[0.2em] text-slate-500">Service Type</th>
+                    <th className="px-6 py-5 text-xs font-black uppercase tracking-[0.2em] text-slate-500">Issue / Desc</th>
+                    <th className="px-6 py-5 text-xs font-black uppercase tracking-[0.2em] text-slate-500">Status Control</th>
+                 </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                 {requests.map((req: any) => (
+                    <tr key={req.id} className="hover:bg-white/[0.02] transition-all group">
+                       <td className="px-6 py-4">
+                          <span className="font-black text-white block mb-0.5">{req.client?.full_name || 'Unknown'}</span>
+                          <span className="text-xs text-slate-500 font-bold">{req.client?.phone || '-'}</span>
+                       </td>
+                       <td className="px-6 py-4">
+                          <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase text-slate-300 tracking-widest">
+                             {req.request_type || 'General'}
+                          </span>
+                       </td>
+                       <td className="px-6 py-4 max-w-xs">
+                          <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed">{req.description || 'No description provided.'}</p>
+                          <span className="text-[10px] text-slate-600 mt-2 block font-medium uppercase tracking-tighter">Registered: {new Date(req.created_at).toLocaleString()}</span>
+                       </td>
+                       <td className="px-6 py-4">
+                          <select 
+                            value={req.status}
+                            onChange={(e) => updateRequestStatus(req.id, e.target.value)}
+                            className={`text-[10px] font-black uppercase tracking-widest px-3 py-2 rounded-xl bg-black border transition-all ${
+                               req.status === 'pending' ? 'text-amber-400 border-amber-500/50' : 
+                               req.status === 'completed' ? 'text-emerald-400 border-emerald-500/50' :
+                               req.status === 'canceled' ? 'text-red-400 border-red-500/50' :
+                               'text-blue-400 border-blue-500/50'
+                            }`}
+                          >
+                             <option value="pending">⏳ Pending Review</option>
+                             <option value="approved">✅ Approved</option>
+                             <option value="in_progress">⚡ In Progress</option>
+                             <option value="completed">🏆 Completed</option>
+                             <option value="canceled">🚫 Canceled</option>
+                          </select>
+                       </td>
+                    </tr>
+                 ))}
+                 {requests.length === 0 && (
+                    <tr><td colSpan={4} className="px-6 py-20 text-center text-slate-500 bg-white/[0.01] italic">No active field requests found.</td></tr>
+                 )}
+              </tbody>
+           </table>
+        </div>
+     )
+  }
+
   // ===== TAB RENDERER =====
   const renderTab = () => {
     switch(activeTab) {
       case 'Overview': return <OverviewTab />
       case 'Leads': return <LeadsTab />
       case 'Clients': return <ClientsTab />
+      case 'Service Requests': return <ServiceTab />
       case 'Staff': return <StaffTab />
       case 'Referrals': return <ReferralsTab />
       case 'Analytics': return <AnalyticsTab />

@@ -22,11 +22,6 @@ export async function middleware(request: NextRequest) {
             value,
             ...options,
           })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
           response.cookies.set({
             name,
             value,
@@ -39,11 +34,6 @@ export async function middleware(request: NextRequest) {
             value: '',
             ...options,
           })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
           response.cookies.set({
             name,
             value: '',
@@ -54,23 +44,27 @@ export async function middleware(request: NextRequest) {
     }
   )
 
+  // This will refresh the session if it's expired
   const { data: { user } } = await supabase.auth.getUser()
+
+  const pathname = request.nextUrl.pathname
 
   // Protected routes list
   const protectedRoutes = ['/dashboard', '/admin', '/staff', '/co-admin']
-  const isProtectedRoute = protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))
+  const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route))
 
   if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
+    url.searchParams.set('next', pathname)
     return NextResponse.redirect(url)
   }
 
   // Redirect to dashboard if logged in and trying to access login page
-  if (request.nextUrl.pathname === '/login' && user) {
+  if (pathname === '/login' && user) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
-    return NextResponse.next()
+    return NextResponse.redirect(url)
   }
 
   return response
