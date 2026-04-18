@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
 
   // Robust path normalization for Production (handles trailing slashes)
   const normalizedPath = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname
-  const isAuthPage = normalizedPath.endsWith('/login') || normalizedPath === '/auth/callback' || normalizedPath === '/login'
+  const isAuthPage = normalizedPath.endsWith('/login') || normalizedPath === '/auth/callback' || normalizedPath === '/login' || normalizedPath === '/debug'
 
   if (isProtectedRoute && !isAuthPage && !user) {
     const url = request.nextUrl.clone()

@@ -18,8 +18,11 @@ export async function getUserProfile() {
   // Ensure role and is_active have valid defaults even if columns are missing or row is null
   let role = profile?.role || 'user';
   
-  // EMERGENCY BYPASS: Force admin role for the owner
-  if (user.email === 'kishnakushwaha91@gmail.com' || user.email === 'vasudhaiventerprises001@gmail.com') {
+  // EMERGENCY BYPASS: Force admin role for the owner (Case-Insensitive)
+  const userEmail = user.email?.toLowerCase();
+  const masterAdmins = ['kishnakushwaha91@gmail.com', 'vasudhaiventerprises001@gmail.com', 'anshu@gmail.com'];
+  
+  if (userEmail && masterAdmins.includes(userEmail)) {
     role = 'admin';
   }
 
