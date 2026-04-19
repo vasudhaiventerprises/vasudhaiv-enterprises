@@ -61,7 +61,7 @@ export default function HeroSection() {
             
             <p className="text-xl md:text-2xl text-slate-300 mb-10 font-light leading-relaxed max-w-xl">
               Govt-certified grid-connected solar power plants. Generate your own electricity for your home, college, or institute and save big on bills. <br/>
-              <span className="text-emerald-400 font-bold">Call: +91 9123456789</span>
+              <span className="text-emerald-400 font-bold">Call: +918840315311</span>
             </p>
             
             {/* Trust Indicators */}
@@ -103,7 +103,7 @@ export default function HeroSection() {
                   </div>
                   <div>
                     <label className="text-xs font-bold uppercase text-slate-400 mb-1.5 block">Mobile Number</label>
-                    <input required name="phone" type="tel" placeholder="+91 90000 00000" className="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium" />
+                    <input required name="phone" type="tel" placeholder="+9188403 15311" className="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-medium" />
                   </div>
                   <div>
                     <label className="text-xs font-bold uppercase text-slate-400 mb-1.5 block">City / Area</label>
