@@ -50,7 +50,7 @@ export default function TermsPage() {
 
           <div className="pt-10 border-t border-white/5 mt-20">
              <p className="text-sm text-slate-500">Last Updated: June 2025</p>
-             <p className="text-sm text-slate-500 mt-2">Contact: info@vasudhaivsolar.com | +91 9123456789</p>
+             <p className="text-sm text-slate-500 mt-2">Contact: info@vasudhaivsolar.com | +91 8840315311</p>
           </div>
         </div>
       </div>

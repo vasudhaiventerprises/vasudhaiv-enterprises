@@ -61,7 +61,7 @@ export default function HeroSection() {
             
             <p className="text-xl md:text-2xl text-slate-300 mb-10 font-normal leading-relaxed max-w-xl">
               Govt-certified grid-connected solar power plants. Generate your own electricity for your home, college, or institute and save big on bills. <br/>
-              <span className="text-emerald-400 font-semibold font-mono mt-3 inline-block bg-emerald-900/30 px-3 py-1 rounded-md border border-emerald-500/20">Call: +91 88403 15311</span>
+              <a href="tel:+918840315311" className="text-emerald-400 font-semibold font-mono mt-3 inline-block bg-emerald-900/30 px-3 py-1 rounded-md border border-emerald-500/20 hover:bg-emerald-800/40 hover:-translate-y-0.5 transition-all cursor-pointer">Call: +91 8840315311</a>
             </p>
             
             {/* Trust Indicators */}
@@ -105,7 +105,7 @@ export default function HeroSection() {
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 mb-2 block">Mobile Number</label>
-                    <input required name="phone" type="tel" placeholder="+91 88403 15311" className="w-full bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-[10px] px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-[14px] shadow-inner" />
+                    <input required name="phone" type="tel" placeholder="+91 8840315311" className="w-full bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-[10px] px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-[14px] shadow-inner" />
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 mb-2 block">City / Area</label>

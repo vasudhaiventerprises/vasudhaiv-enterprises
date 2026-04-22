@@ -9,7 +9,7 @@ import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Solar Panel Installation in Uttar Pradesh | Vasudhaiv Enterprises",
-  description: "Best solar panel installation in Uttar Pradesh. Get zero electricity bills with Govt-certified solar power plants. Call +91 9123456789.",
+  description: "Best solar panel installation in Uttar Pradesh. Get zero electricity bills with Govt-certified solar power plants. Call +91 8840315311.",
   keywords: "solar panel allahabad, solar installation prayagraj, rooftop solar uttar pradesh, solar company allahabad, solar subsidy up, zero electricity bill allahabad",
   alternates: {
     canonical: "https://vasudhaivsolar.com"

@@ -1,6 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
-  "/login/page": "app/login/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js"
+  "/solar-subsidy-disclaimer/page": "app/solar-subsidy-disclaimer/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js",
+  "/terms/page": "app/terms/page.js",
+  "/page": "app/page.js"
 }

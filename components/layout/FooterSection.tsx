@@ -41,11 +41,11 @@ export default function FooterSection() {
               <MapPin size={20} className="text-emerald-500 shrink-0 mt-1"/>
               <span>Find us on Google Maps<br/>615/395 Shri, Sitapur Road<br/>Gayatri Nagar, Lucknow</span>
             </a>
-            <a href="tel:+919123456789" className="flex gap-4 text-slate-400 items-center hover:text-white transition-colors">
+            <a href="tel:+918840315311" className="flex gap-4 text-slate-400 items-center hover:text-white transition-colors">
               <Phone size={20} className="text-emerald-500 shrink-0"/>
-              <span>+91 91234 56789</span>
+              <span>+91 8840315311</span>
             </a>
-            <a href="https://wa.me/919123456789" target="_blank" rel="noreferrer" className="flex gap-4 text-slate-400 items-center hover:text-white transition-colors mt-2">
+            <a href="https://wa.me/918840315311" target="_blank" rel="noreferrer" className="flex gap-4 text-slate-400 items-center hover:text-white transition-colors mt-2">
               <span className="bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full inline-flex gap-2 font-medium text-sm border border-emerald-500/30 w-fit items-center">
                 <MessageCircle size={16} /> WhatsApp Us
               </span>
