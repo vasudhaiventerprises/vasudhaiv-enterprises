@@ -8,27 +8,48 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0f172a", // slate-900
-        foreground: "#f8fafc", // slate-50
+        // TradeMind Design System
+        tm: {
+          bg: "#0d0f14",
+          s1: "#141720",
+          s2: "#1c1f2e",
+          s3: "#252840",
+          border: "#2a2d40",
+          text: "#d4d8f0",
+          muted: "#666880",
+          hint: "#444660",
+          purple: "#9d7cf7",
+          green: "#2dd4a0",
+          red: "#f75c7c",
+          amber: "#f7c948",
+          blue: "#5b8dee",
+        },
+        background: "#0d0f14", // Updated to tm bg
+        foreground: "#d4d8f0", // Updated to tm text
         primary: {
           50: '#ecfdf5',
           100: '#d1fae5',
           300: '#6ee7b7',
-          500: '#10b981',
+          500: '#2dd4a0', // TM green
           600: '#059669',
           900: '#064e3b',
         },
         accent: {
           50: '#fffbeb',
           400: '#fbbf24',
-          500: '#f59e0b',
+          500: '#9d7cf7', // TM purple
           600: '#d97706',
         }
       },
+      fontFamily: {
+        sans: ['"IBM Plex Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': 'linear-gradient(to right bottom, #022c22, #064e3b, #047857)',
-        'glass-gradient': 'linear-gradient(110deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+        'hero-pattern': 'linear-gradient(to right bottom, #141720, #1c1f2e, #0d0f14)',
+        'glass-gradient': 'linear-gradient(135deg, rgba(45,212,160,0.05) 0%, #1c1f2e 60%)',
+        'tm-card-glow': 'linear-gradient(135deg, rgba(157,124,247,0.1) 0%, rgba(20,23,32,1) 100%)',
       },
       animation: {
         'fade-in-up': 'fadeInUp 0.8s ease-out forwards',

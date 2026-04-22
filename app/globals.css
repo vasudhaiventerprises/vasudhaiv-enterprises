@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,10 +9,9 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-slate-50 text-slate-900 font-sans;
+    @apply bg-tm-bg text-tm-text font-sans;
   }
 }
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -34,17 +35,17 @@
 
 /* Custom Scrollbar for premium feel */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #0d0f14;
 }
 ::-webkit-scrollbar-thumb {
-  background: #10b981;
-  border-radius: 5px;
+  background: #2a2d40;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #059669;
+  background: #444660;
 }
 
 .scroll-marquee {

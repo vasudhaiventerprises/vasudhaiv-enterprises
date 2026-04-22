@@ -29,11 +29,21 @@ ChartJS.register(
   Filler
 )
 
-export default function AdminClient({ initialData }: { initialData: any }) {
-  const [activeTab, setActiveTab] = useState('Overview')
+import { useRouter } from 'next/navigation'
+
+export default function AdminClient({ initialData, initialTab = 'Overview' }: { initialData: any, initialTab?: string }) {
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState(initialTab)
   const [leads, setLeads] = useState(initialData.leads || [])
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false)
   const [creatingLead, setCreatingLead] = useState(false)
+  
+  // CRM States
+  const [selectedLead, setSelectedLead] = useState<any>(null)
+  const [leadNotes, setLeadNotes] = useState<any[]>([])
+  const [addingNote, setAddingNote] = useState(false)
+  const [newNote, setNewNote] = useState('')
+  
   const supabase = createClient()
 
   // ===== OVERVIEW TAB =====
@@ -67,7 +77,48 @@ export default function AdminClient({ initialData }: { initialData: any }) {
     const { error } = await supabase.from('leads').update({ status: newStatus }).eq('id', leadId)
     if (!error) {
       setLeads((prev: any[]) => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l))
+      if (selectedLead && selectedLead.id === leadId) {
+         setSelectedLead({ ...selectedLead, status: newStatus })
+      }
     }
+  }
+
+  // ===== CRM NOTES LOGIC =====
+  const openLeadDetails = async (lead: any) => {
+    setSelectedLead(lead)
+    setLeadNotes([])
+    const { data } = await supabase
+      .from('lead_notes')
+      .select('*, admin:profiles!admin_id(full_name)')
+      .eq('lead_id', lead.id)
+      .order('created_at', { ascending: false })
+    if (data) setLeadNotes(data)
+  }
+
+  const handleAddNote = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newNote.trim() || !selectedLead) return
+    setAddingNote(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    // We insert note with current user as admin_id
+    const { data, error } = await supabase
+      .from('lead_notes')
+      .insert({
+        lead_id: selectedLead.id,
+        admin_id: session?.user?.id,
+        note: newNote
+      })
+      .select('*, admin:profiles!admin_id(full_name)')
+      .single()
+
+    if (!error && data) {
+      setLeadNotes([data, ...leadNotes])
+      setNewNote('')
+    } else {
+       console.error("Error adding note", error)
+    }
+    setAddingNote(false)
   }
 
   // ===== LEADS TAB =====
@@ -142,6 +193,110 @@ export default function AdminClient({ initialData }: { initialData: any }) {
         </div>
       )}
 
+      {selectedLead && (
+        <div className="fixed inset-0 z-[100] flex p-6 bg-black/80 backdrop-blur-sm justify-end">
+           <div className="bg-slate-900 border border-white/10 w-full max-w-lg rounded-[2.5rem] p-10 relative shadow-2xl animate-fade-in-up h-full overflow-y-auto hide-scrollbar">
+              <button onClick={() => setSelectedLead(null)} className="absolute top-8 right-8 text-slate-500 hover:text-white">✕</button>
+              
+              <div className="flex items-center gap-4 mb-6">
+                 <div className="w-14 h-14 rounded-full bg-primary-500/10 text-primary-400 flex items-center justify-center font-bold text-xl border border-primary-500/20">
+                    {selectedLead.full_name?.substring(0,2).toUpperCase()}
+                 </div>
+                 <div>
+                    <h2 className="text-2xl font-black text-white">{selectedLead.full_name}</h2>
+                    <p className="text-slate-400 text-sm">{selectedLead.phone}</p>
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-8 bg-black/40 p-5 rounded-2xl border border-white/5">
+                 <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Status</p>
+                    <select 
+                      value={selectedLead.status}
+                      onChange={(e) => handleLeadStatusUpdate(selectedLead.id, e.target.value)}
+                      className={`text-xs font-black uppercase px-2 py-1.5 rounded bg-transparent border-b ${
+                        selectedLead.status === 'new' ? 'text-primary-400 border-primary-500/50' : 
+                        selectedLead.status === 'converted' ? 'text-emerald-400 border-emerald-500/50' :
+                        'text-slate-400 border-slate-500/50'
+                      } w-full focus:outline-none`}
+                    >
+                      <option className="bg-slate-800" value="new">New</option>
+                      <option className="bg-slate-800" value="contacted">Contacted</option>
+                      <option className="bg-slate-800" value="quoted">Quoted</option>
+                      <option className="bg-slate-800" value="converted">Converted</option>
+                      <option className="bg-slate-800" value="lost">Lost</option>
+                    </select>
+                 </div>
+                 <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Location</p>
+                    <p className="text-sm font-medium text-white">{selectedLead.city || 'N/A'}</p>
+                 </div>
+                 <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Requirement</p>
+                    <p className="text-sm font-medium text-white">{selectedLead.roof_type || 'N/A'}</p>
+                 </div>
+                 <div>
+                    <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Bill Range</p>
+                    <p className="text-sm font-medium text-white">{selectedLead.bill_range || 'N/A'}</p>
+                 </div>
+              </div>
+
+              {selectedLead.message && (
+                 <div className="mb-8 p-5 bg-primary-500/5 border border-primary-500/10 rounded-2xl text-slate-300 text-sm">
+                    <p className="text-[10px] uppercase font-bold text-primary-500 mb-2">Customer Message</p>
+                    {selectedLead.message}
+                 </div>
+              )}
+
+              {selectedLead.status === 'converted' && (
+                 <div className="mb-8 p-6 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl text-center">
+                    <p className="text-emerald-400 font-bold mb-3 text-sm">Lead is Marked as Converted 🏆</p>
+                    <button className="px-6 py-2.5 bg-emerald-500 text-black font-extrabold text-xs rounded-xl shadow-lg shadow-emerald-500/20 w-full hover:bg-emerald-400">
+                       Proceed to Client Onboarding
+                    </button>
+                 </div>
+              )}
+
+              <hr className="border-white/5 my-6" />
+
+              <h3 className="text-lg font-black text-white mb-4">Interaction Log</h3>
+              
+              <form onSubmit={handleAddNote} className="mb-6">
+                 <textarea 
+                    value={newNote}
+                    onChange={(e) => setNewNote(e.target.value)}
+                    required
+                    rows={3}
+                    placeholder="Log a call, note, or internal update..."
+                    className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-sm text-white focus:outline-none focus:border-primary-500/50 resize-none mb-3"
+                 ></textarea>
+                 <button 
+                   disabled={addingNote || !newNote.trim()}
+                   className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all disabled:opacity-50 text-xs w-full"
+                 >
+                   {addingNote ? 'Saving...' : 'Add Note to CRM Log'}
+                 </button>
+              </form>
+
+              <div className="space-y-4">
+                 {leadNotes.length > 0 ? leadNotes.map((note) => (
+                    <div key={note.id} className="p-4 rounded-xl bg-white/5 border border-white/5">
+                       <p className="text-sm text-slate-200 mb-2">{note.note}</p>
+                       <div className="flex justify-between items-center text-[10px] text-slate-500">
+                          <span className="font-bold">{note.admin?.full_name || 'Admin'}</span>
+                          <span>{new Date(note.created_at).toLocaleString()}</span>
+                       </div>
+                    </div>
+                 )) : (
+                    <div className="text-center p-6 text-slate-600 text-sm italic">
+                       No interactions logged yet.
+                    </div>
+                 )}
+              </div>
+           </div>
+        </div>
+      )}
+
       <div className="bg-white/5 border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl backdrop-blur-xl">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
@@ -155,7 +310,7 @@ export default function AdminClient({ initialData }: { initialData: any }) {
           </thead>
           <tbody className="divide-y divide-white/5">
             {leads.length > 0 ? leads.map((lead: any) => (
-              <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors group">
+              <tr key={lead.id} className="hover:bg-white/[0.05] transition-colors group cursor-pointer" onClick={() => openLeadDetails(lead)}>
                   <td className="px-6 py-4">
                     <span className="font-bold text-white block">{lead.full_name}</span>
                     <span className="text-xs text-slate-500 font-medium">{lead.phone}</span>
@@ -167,7 +322,7 @@ export default function AdminClient({ initialData }: { initialData: any }) {
                     </span>
                     <span className="text-[10px] text-slate-500 italic">{new Date(lead.created_at).toLocaleDateString()}</span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                     <select 
                       value={lead.status}
                       onChange={(e) => handleLeadStatusUpdate(lead.id, e.target.value)}
@@ -795,13 +950,34 @@ export default function AdminClient({ initialData }: { initialData: any }) {
 
   const tabs = ['Overview', 'Leads', 'Clients', 'Service Requests', 'Staff', 'Referrals', 'Analytics', 'Notifications']
 
+  const reverseTabMap: Record<string, string> = {
+    'Overview': '',
+    'Leads': 'leads',
+    'Clients': 'clients',
+    'Service Requests': 'service',
+    'Staff': 'staff',
+    'Referrals': 'referrals',
+    'Analytics': 'analytics',
+    'Notifications': 'notifications'
+  }
+
+  const handleTabClick = (t: string) => {
+    setActiveTab(t)
+    const slug = reverseTabMap[t]
+    if (slug === '') {
+      router.push('/admin')
+    } else {
+      router.push(`/admin/${slug}`)
+    }
+  }
+
   return (
     <div className="space-y-8 pb-20">
       <div className="flex overflow-x-auto pb-4 hide-scrollbar gap-2">
         {tabs.map(t => (
           <button 
             key={t}
-            onClick={() => setActiveTab(t)}
+            onClick={() => handleTabClick(t)}
             className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
               activeTab === t 
               ? 'bg-primary-500 text-black shadow-lg shadow-primary-500/20' 
