@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
 import StickyContact from "@/components/layout/StickyContact"
+import LocalSchema from "@/components/LocalSchema"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <LocalSchema />
         {children}
         <StickyContact />
       </body>
