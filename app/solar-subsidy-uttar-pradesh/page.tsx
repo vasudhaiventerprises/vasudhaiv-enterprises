@@ -15,7 +15,7 @@ export default function Page() {
       <Navbar />
       <div className="max-w-4xl mx-auto px-6 py-32 prose prose-invert prose-emerald">
         <h1 className="text-3xl font-bold">Solar Subsidy in Uttar Pradesh 2026</h1>
-        <p className="mt-4">The Government of India provides rooftop solar subsidy support for residential solar installations across Uttar Pradesh including Prayagraj. This reduces the upfront installation cost significantly for homeowners.</p>
+        <p className="mt-4">The Government of India provides rooftop solar subsidy support for residential solar installations across Uttar Pradesh including Uttar Pradesh. This reduces the upfront installation cost significantly for homeowners.</p>
         
         <h2 className="mt-6 text-xl font-semibold">Who Can Apply for Solar Subsidy?</h2>
         <ul className="list-disc ml-6">
@@ -35,7 +35,7 @@ export default function Page() {
         </ul>
         
         <h2 className="mt-6 text-xl font-semibold">How Vasudhaiv Enterprises Helps</h2>
-        <p>Our team supports customers in Prayagraj throughout the subsidy registration process, documentation submission and installation approval workflow.</p>
+        <p>Our team supports customers in Uttar Pradesh throughout the subsidy registration process, documentation submission and installation approval workflow.</p>
       </div>
       <FooterSection />
     </main>

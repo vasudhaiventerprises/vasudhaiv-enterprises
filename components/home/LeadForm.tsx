@@ -132,7 +132,7 @@ export default function LeadForm() {
 
               <div className="mb-5">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">City/Area*</label>
-                <input required name="city" type="text" className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="Allahabad" />
+                <input required name="city" type="text" className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500 transition-colors" placeholder="Your City" />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">

@@ -10,7 +10,7 @@ export default function FooterSection() {
           <Logo className="mb-6 block" />
           <p className="text-slate-400 leading-relaxed mb-6 max-w-sm">
             Government certified grid-connected solar energy plants with net metering. <br/><br/>
-            <strong>Service Area:</strong> Serving Prayagraj, Allahabad region and nearby districts of Uttar Pradesh.
+            <strong>Service Area:</strong> Serving all major cities and districts across Uttar Pradesh.
           </p>
           <div className="flex gap-4">
             <a href="https://www.facebook.com/vasudhaiventerprises" target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white hover:bg-blue-600 transition-colors">

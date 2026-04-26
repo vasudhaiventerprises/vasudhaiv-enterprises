@@ -1,6 +1,6 @@
 # Project Overview: Vasudhaiv Enterprises (Solar Installation Platform)
 
-I am building a production-ready, hyper-localized Next.js web application for a solar panel installation business based in Prayagraj, Uttar Pradesh. 
+I am building a production-ready, hyper-localized Next.js web application for a solar panel installation business based in Uttar Pradesh, Uttar Pradesh. 
 
 The primary goal of the platform is lead generation, establishing local SEO dominance, and eventually serving as a CRM and Customer Portal. The codebase is heavily optimized for performance, modern aesthetics, and Google Search indexability.
 
@@ -13,19 +13,19 @@ The primary goal of the platform is lead generation, establishing local SEO domi
 *   **Database/Backend:** Supabase (PostgreSQL) for Lead Capture & Auth
 
 ## 2. SEO & Google Ranking Progress (What is done so far)
-We have just completed a massive technical and content-based Local SEO overhaul to force Google to index and rank the site in the Prayagraj region. Here is exactly what is implemented in the codebase right now:
+We have just completed a massive technical and content-based Local SEO overhaul to force Google to index and rank the site in the Uttar Pradesh region. Here is exactly what is implemented in the codebase right now:
 
 ### A. Semantic Structure & Metadata
-*   **H1 & H2 Optimization:** Removed generic marketing copy and replaced it with strict, keyword-dense semantic headers (`H1: Solar Panel Installation in Prayagraj`, `H2: Rooftop Solar Solutions for Homes & Businesses in Uttar Pradesh`).
+*   **H1 & H2 Optimization:** Removed generic marketing copy and replaced it with strict, keyword-dense semantic headers (`H1: Solar Panel Installation in Uttar Pradesh`, `H2: Rooftop Solar Solutions for Homes & Businesses in Uttar Pradesh`).
 *   **Meta Tags:** Programmed explicit title tags, descriptions, and Canonical URLs across the entire application to prevent duplicate content indexing.
 *   **OpenGraph:** Configured proper OG tags pointing to the custom domain (`vasudhaiventerprises.in`) for social sharing and trust signals.
 
 ### B. High-Density Landing Page Strategy
 To capture long-tail local searches, we created 5 dedicated, isolated landing pages (~750 words each) injected with highly specific keywords:
-1.  `/solar-panel-installation-prayagraj`
-2.  `/rooftop-solar-prayagraj`
-3.  `/home-solar-system-prayagraj`
-4.  `/commercial-solar-installation-prayagraj`
+1.  `/solar-panel-installation-uttar-pradesh`
+2.  `/rooftop-solar-uttar-pradesh`
+3.  `/home-solar-system-uttar-pradesh`
+4.  `/commercial-solar-installation-uttar-pradesh`
 5.  `/solar-subsidy-uttar-pradesh`
 
 ### C. Topical Authority & Internal Linking
@@ -33,7 +33,7 @@ To capture long-tail local searches, we created 5 dedicated, isolated landing pa
 *   **Link Equity Distribution:** Built a highly visible "Popular Searches & Blog" link cluster on the homepage. This guarantees that Googlebot immediately finds and passes PageRank from the homepage directly to the deep service/blog pages.
 
 ### D. Advanced Structured Data (JSON-LD Schema)
-*   **LocalBusiness Schema:** Injected a `SolarEnergyContractor` schema onto the homepage. It explicitly includes the `areaServed` object for "Prayagraj" and exact `GeoCoordinates` (Latitude/Longitude) to trigger Google Maps and Local Pack rankings.
+*   **LocalBusiness Schema:** Injected a `SolarEnergyContractor` schema onto the homepage. It explicitly includes the `areaServed` object for "Uttar Pradesh" and exact `GeoCoordinates` (Latitude/Longitude) to trigger Google Maps and Local Pack rankings.
 *   **FAQ Schema:** Created reusable React components that inject `FAQPage` schema into the DOM to try and win Google "Rich Snippet" expandable results for questions like "What is the cost of solar panels?".
 
 ### E. Crawlability & Indexing

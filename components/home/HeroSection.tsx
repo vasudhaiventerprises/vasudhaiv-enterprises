@@ -56,7 +56,7 @@ export default function HeroSection() {
             
             <h1 className="text-5xl lg:text-6xl font-semibold mb-8 leading-[1.1] text-white tracking-tight">
               Solar Panel Installation <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-400">in Prayagraj</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-400">in Uttar Pradesh</span>
             </h1>
             
             <h2 className="text-xl md:text-2xl text-slate-300 mb-10 font-normal leading-relaxed max-w-xl">
@@ -109,7 +109,7 @@ export default function HeroSection() {
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-slate-400 mb-2 block">City / Area</label>
-                    <input required name="city" type="text" placeholder="Allahabad" className="w-full bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-[10px] px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-[14px] shadow-inner" />
+                    <input required name="city" type="text" placeholder="Your City" className="w-full bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-[10px] px-4 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-[14px] shadow-inner" />
                   </div>
                   
                   <button 

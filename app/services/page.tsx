@@ -4,8 +4,8 @@ import FooterSection from '@/components/layout/FooterSection'
 import ServicesSection from '@/components/home/ServicesSection'
 
 export const metadata: Metadata = {
-  title: "Solar Panel Services in Allahabad | Vasudhaiv Enterprises",
-  description: "Solar installation, AMC, rooftop survey services in Allahabad. Affordable packages. Call for free quote.",
+  title: "Solar Panel Services in Uttar Pradesh | Vasudhaiv Enterprises",
+  description: "Solar installation, AMC, rooftop survey services in Uttar Pradesh. Affordable packages. Call for free quote.",
   alternates: {
     canonical: "https://yourdomain.in/services"
   }
@@ -18,7 +18,7 @@ export default function ServicesPage() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "How much does a 3kW solar panel cost in Allahabad?",
+        "name": "How much does a 3kW solar panel cost in Uttar Pradesh?",
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "A 3kW solar system cost starts around ₹1,50,000 depending on the type of panels and inverter used. Contact us for a precise quote."
@@ -41,7 +41,7 @@ export default function ServicesPage() {
     "name": "Vasudhaiv Enterprises",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Allahabad",
+      "addressLocality": "Uttar Pradesh",
       "addressRegion": "UP",
       "addressCountry": "IN"
     },
@@ -63,7 +63,7 @@ export default function ServicesPage() {
       />
 
       <div className="container mx-auto px-4 mb-20">
-        <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-800">Solar Services in Allahabad</h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 text-gray-800">Solar Services in Uttar Pradesh</h1>
         <ServicesSection />
       </div>
       

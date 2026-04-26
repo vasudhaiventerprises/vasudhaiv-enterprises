@@ -5,7 +5,7 @@ export default function TermsPage() {
     <div className="bg-slate-950 min-h-screen text-slate-300 py-20 px-6">
       <div className="max-w-4xl mx-auto bg-slate-900/50 border border-white/10 p-10 md:p-16 rounded-[2.5rem] shadow-2xl backdrop-blur-xl">
         <h1 className="text-4xl font-black text-white mb-4">Terms and Conditions</h1>
-        <p className="text-primary-400 font-bold mb-10 tracking-widest uppercase text-xs">Vasudhaiv Enterprises • Allahabad, UP</p>
+        <p className="text-primary-400 font-bold mb-10 tracking-widest uppercase text-xs">Vasudhaiv Enterprises • Uttar Pradesh, UP</p>
         
         <div className="prose prose-invert max-w-none space-y-8">
           <section>
@@ -21,7 +21,7 @@ export default function TermsPage() {
               <span className="w-8 h-8 rounded-full bg-primary-500/10 flex items-center justify-center text-primary-400 text-sm">2</span>
               About Vasudhaiv Enterprises
             </h2>
-            <p>Vasudhaiv Enterprises provides solar energy installation, annual maintenance contracts (AMC), rooftop surveys, grid-tied system setup, CCTV systems, and water purification solutions across residential, commercial, and institutional sectors in Prayagraj, Allahabad, and surrounding areas of Uttar Pradesh.</p>
+            <p>Vasudhaiv Enterprises provides solar energy installation, annual maintenance contracts (AMC), rooftop surveys, grid-tied system setup, CCTV systems, and water purification solutions across residential, commercial, and institutional sectors in Uttar Pradesh.</p>
           </section>
 
           <section>

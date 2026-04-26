@@ -172,7 +172,7 @@ export default function AdminClient({ initialData, initialTab = 'Overview' }: { 
                  <div className="grid grid-cols-2 gap-4">
                     <div>
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-2">City</label>
-                        <input name="city" type="text" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500/50" placeholder="Prayagraj" />
+                        <input name="city" type="text" className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary-500/50" placeholder="City" />
                     </div>
                     <div>
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-2">Roof Type</label>

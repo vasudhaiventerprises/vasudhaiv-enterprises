@@ -10,8 +10,8 @@ export default function LocalSchema() {
           url: "https://www.vasudhaiventerprises.in",
           serviceType: "Solar Panel Installation",
           areaServed: {
-            "@type": "City",
-            "name": "Prayagraj"
+            "@type": "State",
+            "name": "Uttar Pradesh"
           },
           geo: {
             "@type": "GeoCoordinates",

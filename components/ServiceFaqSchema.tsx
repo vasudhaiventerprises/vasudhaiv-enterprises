@@ -5,7 +5,7 @@ export default function ServiceFaqSchema() {
     mainEntity: [
       {
         "@type": "Question",
-        name: "Which solar system size is best for homes in Prayagraj?",
+        name: "Which solar system size is best for homes in Uttar Pradesh?",
         acceptedAnswer: {
           "@type": "Answer",
           text: "Most homes install 1kW to 3kW solar systems depending on electricity consumption.",

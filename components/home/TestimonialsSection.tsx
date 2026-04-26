@@ -85,7 +85,7 @@ export default function TestimonialsSection() {
           <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4">
             Trusted by Thousands in <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-amber-500">Uttar Pradesh</span>
           </h3>
-          <p className="text-slate-400 text-lg">Swipe to read the real experiences of homeowners. Projects completed across Uttar Pradesh including Prayagraj.</p>
+          <p className="text-slate-400 text-lg">Swipe to read the real experiences of homeowners. Projects completed across Uttar Pradesh.</p>
         </div>
       </div>
 

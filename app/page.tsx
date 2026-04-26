@@ -11,9 +11,9 @@ import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Solar Panel Installation in Prayagraj | Vasudhaiv Enterprises",
-  description: "Affordable solar panel installation in Prayagraj with government subsidy support. Residential and commercial rooftop solar solutions by Vasudhaiv Enterprises.",
-  keywords: "solar installation Prayagraj, solar company Allahabad, rooftop solar Prayagraj, home solar system Prayagraj, solar subsidy UP",
+  title: "Solar Panel Installation in Uttar Pradesh | Vasudhaiv Enterprises",
+  description: "Affordable solar panel installation in Uttar Pradesh with government subsidy support. Residential and commercial rooftop solar solutions by Vasudhaiv Enterprises.",
+  keywords: "solar installation Uttar Pradesh, solar company UP, rooftop solar UP, home solar system UP, solar subsidy UP",
   alternates: {
     canonical: "https://www.vasudhaiventerprises.in"
   },
@@ -38,23 +38,23 @@ export default function Home() {
       <section className="py-12 bg-slate-900 border-b border-white/5">
         <div className="container mx-auto px-6 text-center max-w-4xl">
           <p className="text-slate-400 text-lg leading-relaxed mb-8">
-            Vasudhaiv Enterprises is a trusted <strong className="text-emerald-400 font-medium">solar company in Allahabad</strong> providing 
-            <strong className="text-emerald-400 font-medium"> rooftop solar installation in Prayagraj</strong> for homes, shops, 
-            institutions and factories across the region with full <strong className="text-emerald-400 font-medium">solar subsidy UP</strong> support.
+            Vasudhaiv Enterprises is a trusted <strong className="text-emerald-400 font-medium">solar company in Uttar Pradesh</strong> providing 
+            <strong className="text-emerald-400 font-medium"> rooftop solar installation across UP</strong> for homes, shops, 
+            institutions and factories with full <strong className="text-emerald-400 font-medium">government solar subsidy</strong> support.
           </p>
           
           {/* SEO Internal Link Cluster & Blog */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm mt-6">
-            <Link href="/solar-panel-installation-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
-              Solar Installation Prayagraj
+            <Link href="/solar-panel-installation-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Solar Installation UP
             </Link>
-            <Link href="/rooftop-solar-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
-              Rooftop Solar in Prayagraj
+            <Link href="/rooftop-solar-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Rooftop Solar in UP
             </Link>
-            <Link href="/home-solar-system-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
-              Home Solar System Prayagraj
+            <Link href="/home-solar-system-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Home Solar System UP
             </Link>
-            <Link href="/commercial-solar-installation-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+            <Link href="/commercial-solar-installation-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
               Commercial Solar Installation
             </Link>
             <Link href="/solar-subsidy-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
@@ -80,12 +80,12 @@ export default function Home() {
       <section className="py-16 bg-slate-900 border-t border-white/5">
         <div className="container mx-auto px-6 max-w-4xl">
           <h2 className="text-3xl font-bold mb-10 text-emerald-400 text-center">
-            Frequently Asked Questions – Solar Installation in Prayagraj
+            Frequently Asked Questions – Solar Installation in Uttar Pradesh
           </h2>
 
           <div className="space-y-6">
             <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-colors">
-              <h3 className="font-semibold text-white text-lg mb-2">What is the cost of solar panel installation in Prayagraj?</h3>
+              <h3 className="font-semibold text-white text-lg mb-2">What is the cost of solar panel installation in Uttar Pradesh?</h3>
               <p className="text-slate-300">Solar installation cost depends on rooftop size and electricity usage. Contact Vasudhaiv Enterprises for a free site survey.</p>
             </div>
 
