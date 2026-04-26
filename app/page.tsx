@@ -5,6 +5,8 @@ import LeadForm from "@/components/home/LeadForm"
 import TestimonialsSection from "@/components/home/TestimonialsSection"
 import Navbar from "@/components/layout/Navbar"
 import FooterSection from "@/components/layout/FooterSection"
+import FaqSchema from "@/components/FaqSchema"
+import Link from "next/link"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -26,7 +28,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <>
+      <FaqSchema />
+      <main className="min-h-screen">
       <Navbar />
       <HeroSection />
       
@@ -43,8 +47,36 @@ export default function Home() {
       <ServicesSection />
       <WhyUsSection />
       <LeadForm />
+
+      {/* Visible FAQ Section */}
+      <section className="py-16 bg-slate-900 border-t border-white/5">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <h2 className="text-3xl font-bold mb-10 text-emerald-400 text-center">
+            Frequently Asked Questions – Solar Installation in Prayagraj
+          </h2>
+
+          <div className="space-y-6">
+            <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-colors">
+              <h3 className="font-semibold text-white text-lg mb-2">What is the cost of solar panel installation in Prayagraj?</h3>
+              <p className="text-slate-300">Solar installation cost depends on rooftop size and electricity usage. Contact Vasudhaiv Enterprises for a free site survey.</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-colors">
+              <h3 className="font-semibold text-white text-lg mb-2">Is government subsidy available?</h3>
+              <p className="text-slate-300">Yes. Residential rooftop solar systems qualify for central government subsidy.</p>
+            </div>
+
+            <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-colors">
+              <h3 className="font-semibold text-white text-lg mb-2">How much electricity bill can solar reduce?</h3>
+              <p className="text-slate-300">Solar systems can reduce electricity bills by up to 90%.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <TestimonialsSection />
       <FooterSection />
     </main>
+    </>
   )
 }
