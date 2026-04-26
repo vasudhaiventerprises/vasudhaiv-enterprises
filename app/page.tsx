@@ -36,11 +36,33 @@ export default function Home() {
       
       <section className="py-12 bg-slate-900 border-b border-white/5">
         <div className="container mx-auto px-6 text-center max-w-4xl">
-          <p className="text-slate-400 text-lg leading-relaxed">
+          <p className="text-slate-400 text-lg leading-relaxed mb-8">
             Vasudhaiv Enterprises is a trusted <strong className="text-emerald-400 font-medium">solar company in Allahabad</strong> providing 
             <strong className="text-emerald-400 font-medium"> rooftop solar installation in Prayagraj</strong> for homes, shops, 
             institutions and factories across the region with full <strong className="text-emerald-400 font-medium">solar subsidy UP</strong> support.
           </p>
+          
+          {/* SEO Internal Link Cluster & Blog */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm mt-6">
+            <Link href="/solar-panel-installation-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Solar Installation Prayagraj
+            </Link>
+            <Link href="/rooftop-solar-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Rooftop Solar in Prayagraj
+            </Link>
+            <Link href="/home-solar-system-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Home Solar System Prayagraj
+            </Link>
+            <Link href="/commercial-solar-installation-prayagraj" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              Commercial Solar Installation
+            </Link>
+            <Link href="/solar-subsidy-uttar-pradesh" className="bg-white/5 py-3 px-4 rounded-lg hover:bg-emerald-500/10 hover:text-emerald-400 text-slate-300 transition-colors border border-white/5 flex items-center justify-center">
+              UP Solar Subsidy Guide
+            </Link>
+            <Link href="/blog/solar-subsidy-uttar-pradesh-2026" className="bg-emerald-500/10 py-3 px-4 rounded-lg hover:bg-emerald-500/20 text-emerald-400 transition-colors border border-emerald-500/20 font-medium flex items-center justify-center">
+              📝 Latest Blog Post
+            </Link>
+          </div>
         </div>
       </section>
 
