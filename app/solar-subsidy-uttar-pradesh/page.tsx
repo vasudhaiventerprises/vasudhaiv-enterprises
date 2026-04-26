@@ -1,5 +1,6 @@
 import Navbar from "@/components/layout/Navbar"
 import FooterSection from "@/components/layout/FooterSection"
+import ServiceFaqSchema from "@/components/ServiceFaqSchema"
 
 export const metadata = {
   title: "Solar Subsidy in Uttar Pradesh 2026 | Rooftop Solar Scheme Guide",
@@ -8,7 +9,9 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-slate-900 text-white">
+    <>
+      <ServiceFaqSchema />
+      <main className="min-h-screen bg-slate-900 text-white">
       <Navbar />
       <div className="max-w-4xl mx-auto px-6 py-32 prose prose-invert prose-emerald">
         <h1 className="text-3xl font-bold">Solar Subsidy in Uttar Pradesh 2026</h1>
@@ -36,5 +39,6 @@ export default function Page() {
       </div>
       <FooterSection />
     </main>
+    </>
   );
 }
