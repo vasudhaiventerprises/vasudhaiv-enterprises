@@ -7,9 +7,17 @@ export default function LocalSchema() {
           "@context": "https://schema.org",
           "@type": "SolarEnergyContractor",
           name: "Vasudhaiv Enterprises",
-          areaServed: "Prayagraj",
           url: "https://www.vasudhaiventerprises.in",
           serviceType: "Solar Panel Installation",
+          areaServed: {
+            "@type": "City",
+            "name": "Prayagraj"
+          },
+          geo: {
+            "@type": "GeoCoordinates",
+            "latitude": 25.4358,
+            "longitude": 81.8463
+          }
         }),
       }}
     />

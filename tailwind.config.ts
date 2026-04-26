@@ -84,7 +84,7 @@ const config: Config = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'),
+    // require('@tailwindcss/typography'), // Temporarily disabled so npm run dev can start
   ],
 };
 export default config;

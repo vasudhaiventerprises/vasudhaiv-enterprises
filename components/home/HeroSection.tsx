@@ -54,15 +54,15 @@ export default function HeroSection() {
               Government Certified Net Metering • Subsidies Available
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-semibold mb-8 leading-[1.1] text-white tracking-tight">
-              Zero Electricity Bills <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-400">सोलर लगाओ पैसे बचाओ..</span>
+            <h1 className="text-5xl lg:text-6xl font-semibold mb-8 leading-[1.1] text-white tracking-tight">
+              Solar Panel Installation <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-400">in Prayagraj</span>
             </h1>
             
-            <p className="text-xl md:text-2xl text-slate-300 mb-10 font-normal leading-relaxed max-w-xl">
-              Govt-certified grid-connected solar power plants. Generate your own electricity for your home, college, or institute and save big on bills. <br/>
+            <h2 className="text-xl md:text-2xl text-slate-300 mb-10 font-normal leading-relaxed max-w-xl">
+              Rooftop Solar Solutions for Homes & Businesses in Uttar Pradesh. Generate your own electricity and save big on bills. <br/>
               <a href="tel:+918840315311" className="text-emerald-400 font-semibold font-mono mt-3 inline-block bg-emerald-900/30 px-3 py-1 rounded-md border border-emerald-500/20 hover:bg-emerald-800/40 hover:-translate-y-0.5 transition-all cursor-pointer">Call: +91 8840315311</a>
-            </p>
+            </h2>
             
             {/* Trust Indicators */}
             <div className="flex flex-col sm:flex-row gap-8 items-start sm:items-center p-5 rounded-[12px] bg-slate-900/40 backdrop-blur-xl border border-white/10 max-w-xl shadow-[0_8px_30px_rgba(0,0,0,0.2)]">

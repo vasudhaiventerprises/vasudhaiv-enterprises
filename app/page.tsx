@@ -3,6 +3,7 @@ import ServicesSection from "@/components/home/ServicesSection"
 import WhyUsSection from "@/components/home/WhyUsSection"
 import LeadForm from "@/components/home/LeadForm"
 import TestimonialsSection from "@/components/home/TestimonialsSection"
+import RoiCalculator from "@/components/home/RoiCalculator"
 import Navbar from "@/components/layout/Navbar"
 import FooterSection from "@/components/layout/FooterSection"
 import FaqSchema from "@/components/FaqSchema"
@@ -19,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Solar Panel Installation in Uttar Pradesh | Vasudhaiv Enterprises",
     description: "Best solar panel installation in Uttar Pradesh. Govt-certified grid-connected solar power plants. Save big on bills.",
-    url: "https://vasudhaivsolar.com",
+    url: "https://www.vasudhaiventerprises.in",
     type: "website",
     images: [{ url: "/og-image.jpg" }]
   },
@@ -69,6 +70,11 @@ export default function Home() {
       <ServicesSection />
       <WhyUsSection />
       <LeadForm />
+      
+      {/* Interactive Savings Calculator */}
+      <section className="py-8 bg-[#0a0f1c] px-6">
+        <RoiCalculator />
+      </section>
 
       {/* Visible FAQ Section */}
       <section className="py-16 bg-slate-900 border-t border-white/5">
